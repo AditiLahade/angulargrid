@@ -1,0 +1,51 @@
+.navbar{
+    border-bottom: 6px solid rgb(120, 197, 5);
+    padding: 0px;
+    
+}
+
+kendo-buttongroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* controls the spacing between buttons */
+    justify-content: start;
+  }
+ 
+  .nav-btn {
+    background-color: #002b80; /* deep blue */
+    color: white;
+    border: none;
+    padding: 0px 10px;
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px; /* gap between icon and text */
+    height: 40px;
+    min-width: 140px; /* to keep all buttons similar in size */
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+ 
+ 
+  .calendar-dropdown {
+    position: absolute;
+    top: 50px; 
+    left: 400px; 
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 10px;
+  }
+   
+
+
+
+
+
+

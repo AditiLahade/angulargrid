@@ -1,0 +1,358 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap Icons (for gear and dropdown) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+
+
+
+<div class="header-bar mt-2">
+    <div class="left-section">
+        <h4 class="title">Lead Management</h4>
+        <span class="subtitle">Leads</span>
+    </div>
+
+    <div class="right-section">
+        <label class="board-view">
+            <input type="checkbox" />
+            <span>Board View</span>
+        </label>
+
+
+        <button class="green-btn" (click)="exportExcel(gridRef)"> <i class="fas fa-file-excel"></i> Export to
+            Excel</button>
+
+
+        <button class="btn green-btn">Create</button>
+    </div>
+</div>
+
+
+<!-- <div class="grid-container mt-2">
+    <kendo-grid #gridRef [kendoGridBinding]="gridView" kendoGridSelectBy="id" [(selectedKeys)]="mySelection"
+        [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true" [sortable]="true"
+        [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500" [columnMenu]="{ filter: true }"
+        class="mt-3">
+        <ng-template kendoGridToolbarTemplate>
+
+            <div class="small-dropdown" style="margin-bottom: 30px;">
+
+                <kendo-dropdownlist [data]="areaList" [defaultItem]="'All Leads'"></kendo-dropdownlist>
+
+            </div>
+
+            <div class="small-dropdown-big" style="margin-bottom: 30px;">
+
+                <kendo-dropdownlist [data]="areaList" [defaultItem]="'Select Saved Preference'"></kendo-dropdownlist>
+
+            </div>
+
+
+            <div class="search-container" style="margin-bottom: 30px;">
+                <kendo-textbox #searchInput [style.width.px]="190" placeholder="Type Search Keyword"
+                    (valueChange)="onFilter(searchInput.value)" class="search-text">
+                </kendo-textbox>
+
+                <button class="search-btn" (click)="onFilter(searchInput.value)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" width="18" viewBox="0 0 512 512" fill="white">
+                        <path
+                            d="M505 442.7L405.3 343c28.4-34.9 45.7-79.4 45.7-127C451 96.5 354.5 0 231 0S11 96.5 11 216s96.5 216 216 216c48.6 0 92.1-17.3 127-45.7l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l18.4-18.4c9.5-9.4 9.5-24.6.1-33.9zM231 360c-79.5 0-144-64.5-144-144S151.5 72 231 72s144 64.5 144 144-64.5 144-144 144z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+
+            <kendo-grid-spacer></kendo-grid-spacer>
+
+
+            <div class="toggle-wrapper ms-3" style="margin-bottom: 30px;">
+                <div class="slider-bg" [ngStyle]="{ left: selectedToggle === 'non-intl' ? '0%' : '50%' }"></div>
+
+                <button class="toggle-btn" [class.active]="selectedToggle === 'non-intl'"
+                    (click)="toggleIntl('non-intl')">Non-Intl.</button>
+
+                <button class="toggle-btn" [class.active]="selectedToggle === 'intl'"
+                    (click)="toggleIntl('intl')">Intl.</button>
+            </div>
+
+
+
+
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Clear Filters</button>
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Bulk Edit</button>
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Save Preferences</button>
+
+
+            <button class="hamburger-btn" [class.active]="menuOpen" (click)="menuOpen = !menuOpen"
+                style="margin-bottom: 30px;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+
+
+
+        </ng-template>
+
+
+
+    
+        
+
+        <kendo-grid-checkbox-column [width]="45" [headerStyle]="{ 'background-color': '#002b80', 'color': 'white'}"
+            [headerClass]="{ 'text-center': true }" [class]="{ 'text-center': true }" [resizable]="false"
+            [columnMenu]="false" [showSelectAll]="true"></kendo-grid-checkbox-column>
+        
+        <kendo-grid-column field="full_name" title="Actions" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="action-dropdown" style="margin-bottom: 30px;">
+
+                    <kendo-dropdownlist class="green-kendo-dropdown" [data]="areaList" [defaultItem]="'Actions'"
+                        style="background-color: #82bc3b; color: white; border: none; border-radius: 6px; padding: 5px 12px;"></kendo-dropdownlist>
+
+                </div>
+
+            </ng-template>
+        </kendo-grid-column>
+
+
+    
+
+
+
+
+
+        <kendo-grid-column field="job_title" title="Record Id" [width]="270"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="country" title="Last Name" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="is_online" title="First Name" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="rating" title="Primary Email Address" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="phone" title="Primary Phone Type" [width]="150"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="budget" title="LMP Lead Id" [width]="130" filter="numeric"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [ngClass]="{ 'red text-bold': dataItem.budget < 0 }">{{
+                    dataItem.budget | currency
+                    }}</span>
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="address" title="Appoinment Type" [width]="200"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="number" title="Booking Agency" [width]="150"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+        </kendo-grid-column>
+
+
+
+    </kendo-grid>
+</div> -->
+
+
+
+
+
+
+<div class="grid-container mt-2">
+    <kendo-grid #gridRef [kendoGridBinding]="gridData" [editable]="true" (edit)="editHandler($event)"
+        (cancel)="cancelHandler()" (save)="saveHandler($event)" (remove)="removeHandler($event)" kendoGridSelectBy="id"
+        [(selectedKeys)]="mySelection" [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true"
+        [sortable]="true" [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500"
+        [columnMenu]="{ filter: true }" class="mt-3">
+
+
+
+        <ng-template kendoGridToolbarTemplate>
+
+            <div class="small-dropdown" style="margin-bottom: 30px;">
+
+                <kendo-dropdownlist [data]="areaList" [defaultItem]="'All Leads'"></kendo-dropdownlist>
+
+            </div>
+
+            <div class="small-dropdown-big" style="margin-bottom: 30px;">
+
+                <kendo-dropdownlist [data]="areaList" [defaultItem]="'Select Saved Preference'"></kendo-dropdownlist>
+
+            </div>
+
+
+            <div class="search-container" style="margin-bottom: 30px;">
+                <kendo-textbox #searchInput [style.width.px]="190" placeholder="Type Search Keyword"
+                    (valueChange)="onFilter(searchInput.value)" class="search-text">
+                </kendo-textbox>
+
+                <button class="search-btn" (click)="onFilter(searchInput.value)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" width="18" viewBox="0 0 512 512" fill="white">
+                        <path
+                            d="M505 442.7L405.3 343c28.4-34.9 45.7-79.4 45.7-127C451 96.5 354.5 0 231 0S11 96.5 11 216s96.5 216 216 216c48.6 0 92.1-17.3 127-45.7l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l18.4-18.4c9.5-9.4 9.5-24.6.1-33.9zM231 360c-79.5 0-144-64.5-144-144S151.5 72 231 72s144 64.5 144 144-64.5 144-144 144z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+
+            <kendo-grid-spacer></kendo-grid-spacer>
+
+
+            <div class="toggle-wrapper ms-3" style="margin-bottom: 30px;">
+                <div class="slider-bg" [ngStyle]="{ left: selectedToggle === 'non-intl' ? '0%' : '50%' }"></div>
+
+                <button class="toggle-btn" [class.active]="selectedToggle === 'non-intl'"
+                    (click)="toggleIntl('non-intl')">Non-Intl.</button>
+
+                <button class="toggle-btn" [class.active]="selectedToggle === 'intl'"
+                    (click)="toggleIntl('intl')">Intl.</button>
+            </div>
+
+
+
+
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Clear Filters</button>
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Bulk Edit</button>
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Save Preferences</button>
+
+
+            <button class="hamburger-btn" [class.active]="menuOpen" (click)="menuOpen = !menuOpen"
+                style="margin-bottom: 30px;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+
+
+
+        </ng-template>
+
+
+
+
+
+
+        <kendo-grid-checkbox-column [width]="45" [headerStyle]="{ 'background-color': '#002b80', 'color': 'white'}"
+            [headerClass]="{ 'text-center': true }" [class]="{ 'text-center': true }" [resizable]="false"
+            [columnMenu]="false" [showSelectAll]="true"></kendo-grid-checkbox-column>
+
+
+
+
+
+        <kendo-grid-column title="Actions" [width]="200"
+         [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+
+            <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                <button kendoButton icon="edit"
+                    (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
+                    *ngIf="editedItem?.id !== dataItem.id">
+                    Edit
+                </button>
+
+                <button kendoButton icon="save" (click)="saveHandler({ sender: grid, rowIndex, dataItem })"
+                    *ngIf="editedItem?.id === dataItem.id">
+                    Save
+                </button>
+
+                <button kendoButton icon="cancel" (click)="cancelHandler()" *ngIf="editedItem?.id === dataItem.id">
+                    Cancel
+                </button>
+
+                <button kendoButton icon="delete" (click)="removeHandler({ dataItem })"
+                    *ngIf="editedItem?.id !== dataItem.id">
+                    Delete
+                </button>
+            </ng-template>
+        </kendo-grid-column>
+ 
+        <kendo-grid-column field="Record_Id" title="Record Id" [width]="270"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.Record_Id" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="last_name" title="Last Name" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.last_name" />
+            </ng-template>
+
+        </kendo-grid-column>
+
+        <kendo-grid-column field="first_name" title="First Name" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.first_name" />
+            </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="email" title="Primary Email Address" [width]="220"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.email" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="phone" title="Primary Phone Type" [width]="150"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.phone" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="lmp_lead" title="LMP Lead Id" [width]="130" filter="numeric"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.lmp_lead" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="appoinment_type" title="Appoinment Type" [width]="200"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.appoinment_type" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="booking_agency" title="Booking Agency" [width]="150"
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <input kendoTextBox [(ngModel)]="dataItem.booking_agency" />
+            </ng-template>
+        </kendo-grid-column>
+
+
+
+    </kendo-grid>
+</div>
