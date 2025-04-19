@@ -1,5 +1,5 @@
-import {  GridModule } from '@progress/kendo-angular-grid';
-import { CommonModule } from '@angular/common';
+import {  GridModule, KENDO_GRID } from '@progress/kendo-angular-grid';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { KENDO_CHARTS } from "@progress/kendo-angular-charts";
 import {
@@ -15,11 +15,12 @@ import { images } from "./images";
 
 import { KENDO_LABELS } from "@progress/kendo-angular-label";
 import { DropDownsModule, KENDO_DROPDOWNS } from "@progress/kendo-angular-dropdowns";
-import { FormsModule, NgModel } from '@angular/forms';
+import { FormGroup, FormsModule, NgModel } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { GridComponent as KendoGridComponent } from '@progress/kendo-angular-grid';
+import { ApiService } from '../api.service';
 
 
 
@@ -29,13 +30,14 @@ import { GridComponent as KendoGridComponent } from '@progress/kendo-angular-gri
   standalone: true,
     imports: [CommonModule,GridModule,
     KENDO_CHARTS,
-    KENDO_INPUTS,
-    KENDO_GRID_PDF_EXPORT,
-    KENDO_GRID_EXCEL_EXPORT, KENDO_LABELS, KENDO_DROPDOWNS,FormsModule,DropDownsModule,ReactiveFormsModule],
+    KENDO_INPUTS,NgIf,
+    KENDO_GRID_PDF_EXPORT,ReactiveFormsModule,
+    KENDO_GRID_EXCEL_EXPORT, KENDO_LABELS, KENDO_DROPDOWNS,FormsModule,DropDownsModule,ReactiveFormsModule, KENDO_GRID, KENDO_DROPDOWNS],
   
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA], 
+  providers: [ApiService]
   
 })
 export class GridComponent {
@@ -44,9 +46,10 @@ export class GridComponent {
   @ViewChild('gridRef') grid!: KendoGridComponent;
   public gridData: unknown[] = employees;
 
+  constructor(private apiService: ApiService) {}
 
 
-  public gridView!: unknown[];
+  // public gridView!: unknown[];
 
   
 
@@ -54,7 +57,9 @@ export class GridComponent {
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
 
+  public gridView: any[] = []
 
+  
 
 
   menuOpen = false;
@@ -62,8 +67,24 @@ export class GridComponent {
   selectedToggle = 'non-intl';
 
   public ngOnInit(): void {
-    this.gridView = this.gridData;
-    console.log('Grid Data:', this.gridData); // Debugging
+this.loadGridData(); // Load grid data on initialization
+
+    // this.gridView = this.gridData;
+    // console.log('Grid Data:', this.gridData); // Debugging
+  }
+
+
+  public loadGridData(): void {
+    // Assuming the API service returns an observable of data
+    this.apiService.getData().subscribe(
+      (data) => {
+        this.gridView = data; // Assign the fetched data to the gridView
+        console.log('Grid Data:', this.gridView); // Debugging
+      },
+      (error) => {
+        console.error('Error loading grid data:', error); // Handle error if data fetching fails
+      }
+    );
   }
  
   public onFilter(value: string): void {
@@ -158,30 +179,122 @@ toggleIntl(type: 'non-intl' | 'intl') {
 
 
 
-  public editedItem: any;
+  // public editedItem: any;
 
-  public editHandler({sender, rowIndex, dataItem }: any): void {
-    this.editedItem = { ...dataItem };
-    sender.editRow(rowIndex);
-  }
-  
-  public cancelHandler(): void {
-    this.editedItem = undefined;
-  }
-  
-  public saveHandler({ sender, rowIndex,dataItem }: any): void {
-    sender.closeRow(rowIndex);
+  // public editHandler({ sender, rowIndex, dataItem }: any): void {
+  //   // Make a copy of the dataItem and assign it to editedItem for editing
+  //   this.editedItem = { ...dataItem };
+    
+  //   // Put the row in edit mode
+  //   sender.editRow(rowIndex);
+  // }
 
-    const index = (this.gridData as any[]).findIndex(item => item.id === dataItem.id);
-    console.log('Save Handler:', { dataItem, index, editedItem: this.editedItem }); // Debugging
-    if (index !== -1) {
-      this.gridData[index] = this.editedItem;
+public editedItem: any; // Store the currently edited item
+
+public editHandler({ sender, rowIndex, dataItem }: any): void {
+  console.log('Editing row:', dataItem); // Debugging
+
+  this.editedItem = { ...dataItem };
+  sender.editRow(rowIndex);
+}
+
+// saveHandler(event: any) {
+//   const { sender, rowIndex, dataItem } = event;
+  
+//   console.log('Event:', event);
+//   console.log('Grid:', sender);
+//   console.log('Row Index:', rowIndex);
+//   console.log('Data Item:', dataItem);
+
+//   if (!dataItem) {
+//     console.error('No data item found!');
+//     return;
+//   }
+
+//   // Assuming you are modifying the data in the grid
+//   // For example, if you're updating the first_name field:
+//   const updatedData = {
+//     ...dataItem,  // Copy the existing data
+//     first_name: 'Updated Name',  // Modify the necessary field
+//   };
+
+//   // Update the grid's data source
+//   sender.dataSource.update(updatedData);
+//   console.log('Updated Data:', updatedData);
+
+//   // Optional: Persist updated data (e.g., to JSON, localStorage, or a backend)
+//   // For example, if you are using localStorage:
+//   const storedData = JSON.parse(localStorage.getItem('yourDataKey') || '[]');
+//   const updatedDataList = storedData.map((item: any) =>
+//     item.id === updatedData.id ? updatedData : item
+//   );
+//   localStorage.setItem('yourDataKey', JSON.stringify(updatedDataList));
+  
+//   // Log the update to confirm
+//   console.log('Updated Data in Local Storage:', updatedDataList);
+// }
+
+// saveHandler({ sender, rowIndex, dataItem }: any): void {
+//   console.log('Sender:', sender);
+//   console.log('Row Index:', rowIndex);
+//   console.log('Data Item:', dataItem);
+//   console.log('Service:', this.apiService);
+
+//   if (!this.apiService || !this.apiService.updateData) {
+//     console.error('Service is not defined or update method is missing!');
+//     return;
+//   }
+
+//   this.apiService.updateData(dataItem).subscribe({
+//     next: (updatedItem) => {
+//       console.log('Data updated successfully:', updatedItem);
+//       sender.closeRow(rowIndex); // Close row after successful update
+//     },
+//     error: (error) => {
+//       console.error('Update failed:', error);
+//     }
+//   });
+// }
+
+saveHandler({ sender, rowIndex, dataItem }: any): void {
+  console.log('Sender:', sender);
+  console.log('Row Index:', rowIndex);
+  console.log('Data Item:', dataItem);
+  console.log('Service:', this.apiService);
+
+  if (!this.apiService || !this.apiService.updateData) {
+    console.error('Service is not defined or update method is missing!');
+    return;
+  }
+
+  this.apiService.updateData(dataItem).subscribe({
+    next: (updatedItem) => {
+      console.log('Data updated successfully:', updatedItem);
+
+      // ✅ Manually update the local data array to reflect changes immediately
+      this.gridData[rowIndex] = updatedItem;
+
+      // ✅ Close the row in the grid
+      sender.closeRow(rowIndex);
+    },
+    error: (error) => {
+      console.error('Update failed:', error);
     }
-    this.editedItem = undefined;
-  }
+  });
+}
+
+
+
+
+public cancelHandler(): void {
+  console.log('Cancel editing');
+  this.editedItem = undefined;
+}
+
+  
   
   public removeHandler({ dataItem }: any): void {
-    this.gridData = (this.gridData as any[]).filter(item => item.id !== dataItem.id);
+    this.gridData = this.gridData.filter((item:any) => item.id !== dataItem.id);
   }
   
 

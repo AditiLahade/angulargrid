@@ -179,7 +179,7 @@
 
 
 <div class="grid-container mt-2">
-    <kendo-grid #gridRef [kendoGridBinding]="gridData" [editable]="true" (edit)="editHandler($event)"
+    <kendo-grid #gridRef [kendoGridBinding]="gridView" [editable]="true" (edit)="editHandler($event)"
         (cancel)="cancelHandler()" (save)="saveHandler($event)" (remove)="removeHandler($event)" kendoGridSelectBy="id"
         [(selectedKeys)]="mySelection" [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true"
         [sortable]="true" [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500"
@@ -268,15 +268,16 @@
 
             <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                 <button kendoButton icon="edit"
-                    (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
-                    *ngIf="editedItem?.id !== dataItem.id">
-                    Edit
-                </button>
+                (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
+                *ngIf="editedItem?.id !== dataItem.id">
+                Edit
+            </button>
 
-                <button kendoButton icon="save" (click)="saveHandler({ sender: grid, rowIndex, dataItem })"
-                    *ngIf="editedItem?.id === dataItem.id">
-                    Save
-                </button>
+            <button kendoButton icon="save" (click)="saveHandler({ sender: grid, rowIndex, dataItem })"
+            *ngIf="editedItem?.id === dataItem.id">
+      Save
+    </button>
+    
 
                 <button kendoButton icon="cancel" (click)="cancelHandler()" *ngIf="editedItem?.id === dataItem.id">
                     Cancel

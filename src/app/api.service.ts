@@ -6,11 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/data'; // This should match your backend route
+  private apiUrl = 'http://localhost:3000/employee'; // Backend URL
 
   constructor(private http: HttpClient) {}
 
   getData(): Observable<any> {
     return this.http.get<any>(this.apiUrl);
   }
+
+  updateData(data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${data.id}`, data);
+  }
+  
 }
