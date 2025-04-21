@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+body.dark-mode {
+    background-color: #111;
+    color: #fff;
+  }
+  
+  .dark-mode .k-grid {
+    background-color: #1e1e1e;
+    color: #fff;
+  }
+  
+  .dark-mode .k-button {
+    background-color: #2e7d32;
+    color: white;
+  }
+  
+  .dark-mode .k-grid tr.k-alt {
+    background-color: #222;
+  }
+  
+  
