@@ -28,7 +28,7 @@ import { ApiService } from '../api.service';
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [CommonModule, GridModule,ExcelModule,
+  imports: [CommonModule, GridModule, ExcelModule,
     KENDO_CHARTS,
     KENDO_INPUTS, NgIf,
     KENDO_GRID_PDF_EXPORT, ReactiveFormsModule,
@@ -44,7 +44,7 @@ export class GridComponent {
 
   @ViewChild(DataBindingDirective) dataBinding !: DataBindingDirective;
   @ViewChild('gridRef') grid!: KendoGridComponent;
-  public gridData: unknown[] = employees;
+
 
   constructor(private apiService: ApiService) { }
 
@@ -52,18 +52,28 @@ export class GridComponent {
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
 
-  public gridView: any[] = []
 
-
+  public gridData: any[] = [];
+  public gridView: any[] = [];
 
 
   menuOpen = false;
 
   selectedToggle = 'non-intl';
 
-  public ngOnInit(): void {
-    this.loadGridData();
 
+
+  ngOnInit(): void {
+    this.apiService.getData().subscribe(
+      (data) => {
+        console.log('Fetched data:', data);
+        this.gridData = data;
+        this.gridView = [...this.gridData];
+      },
+      (error) => {
+        console.error('Error loading grid data:', error);
+      }
+    );
   }
 
 
@@ -120,7 +130,7 @@ export class GridComponent {
     this.dataBinding.skip = 0;
   }
 
- 
+
 
 
   public areaList: Array<string> = [
@@ -149,42 +159,140 @@ export class GridComponent {
 
 
 
-
-
-
-
   public editedItem: any;
 
-  public editHandler({ sender, rowIndex, dataItem }: any): void {
-    console.log('Editing row:', dataItem);
+public editHandler({ sender, rowIndex, dataItem }: any): void {
+    console.log('Edit Handler Triggered');
+    console.log('Editing Row:', dataItem);
 
-    this.editedItem = { ...dataItem };
-    sender.editRow(rowIndex);
+    this.editedItem = dataItem; 
+    sender.editRow(rowIndex); 
   }
 
 
-  saveHandler({ sender, rowIndex, dataItem }: any): void {
-    console.log('Sender:', sender);
-    console.log('Row Index:', rowIndex);
+public saveHandler({ sender, rowIndex, dataItem }: any): void {
+    console.log('Save Handler Triggered');
     console.log('Data Item:', dataItem);
-    console.log('Service:', this.apiService);
 
-    if (!this.apiService || !this.apiService.updateData) {
-      console.error('Service is not defined or update method is missing!');
+    if (dataItem.id === null) {
+      
+      console.log('Adding new data to the backend...');
+      this.apiService.addData(dataItem).subscribe({
+        next: (newItem) => {
+          console.log('New data added successfully:', newItem);
+
+          
+          const index = this.gridData.findIndex((item: any) => item === dataItem);
+          if (index !== -1) {
+            this.gridData[index] = newItem;
+          } else {
+            this.gridData.push(newItem); 
+          }
+
+          this.gridView = [...this.gridData];
+          this.editedItem = undefined;
+          sender.closeRow(rowIndex); 
+        },
+        error: (error: any) => {
+          console.error('Error adding new data:', error);
+        }
+      });
+    } else {
+
+      console.log('Updating existing data...');
+      this.apiService.updateData(dataItem).subscribe({
+        next: (updatedItem) => {
+          console.log('Data updated successfully:', updatedItem);
+
+          const index = this.gridData.findIndex((item: any) => item.id === dataItem.id);
+          if (index !== -1) {
+            this.gridData[index] = updatedItem;
+          }
+
+          this.gridView = [...this.gridData];
+          this.editedItem = undefined;
+          sender.closeRow(rowIndex); 
+        },
+        error: (error) => {
+          console.error('Error updating data:', error);
+        }
+      });
+    }
+  }
+
+
+public cancelHandler(): void {
+    console.log('Cancel editing');
+    this.editedItem = undefined; 
+  }
+
+ public removeHandler({ dataItem }: any): void {
+    console.log('Data Item to be deleted:', dataItem);
+
+    if (!dataItem || !dataItem.id) {
+      console.error('Invalid dataItem or missing id:', dataItem);
       return;
     }
 
-    this.apiService.updateData(dataItem).subscribe({
-      next: (updatedItem) => {
-        console.log('Data updated successfully:', updatedItem);
 
-        this.gridData[rowIndex] = updatedItem;
+    this.apiService.deleteData(dataItem.id).subscribe({
+      next: () => {
+        console.log('Data deleted successfully:', dataItem);
 
 
-        sender.closeRow(rowIndex);
+        this.gridData = this.gridData.filter((item: any) => item.id !== dataItem.id);
+        this.gridView = [...this.gridData];
+      },
+      error: (error: any) => {
+        console.error('Error deleting data:', error);
+      }
+    });
+  }
+
+
+ // add new row button
+
+
+
+
+
+  public addNewRow(): void {
+    const newItem = {
+      id: null, 
+      Record_Id: '',
+      last_name: '',
+      first_name: '',
+      email: '',
+      phone: '',
+      lmp_lead: '',
+      appoinment_type: '',
+      booking_agency: ''
+    };
+
+
+    this.gridData.unshift(newItem);
+    this.gridView = [...this.gridData];
+
+    
+    this.editedItem = newItem;
+
+ 
+    const rowIndex = this.gridData.indexOf(newItem);
+    this.grid.editRow(rowIndex);
+  }
+
+
+
+
+  public reloadGrid(): void {
+    this.apiService.getData().subscribe({
+      next: (data) => {
+        this.gridData = data;
+        this.gridView = [...this.gridData];
+        console.log('Grid reloaded successfully:', this.gridView);
       },
       error: (error) => {
-        console.error('Update failed:', error);
+        console.error('Error reloading grid data:', error);
       }
     });
   }
@@ -192,19 +300,30 @@ export class GridComponent {
 
 
 
-  public cancelHandler(): void {
-    console.log('Cancel editing');
-    this.editedItem = undefined;
-  }
 
 
 
-  public removeHandler({ dataItem }: any): void {
-    this.gridData = this.gridData.filter((item: any) => item.id !== dataItem.id);
-  }
 
 
+
+  public cellClickHandler({ sender, rowIndex, dataItem }: any): void {
+    console.log('Cell clicked:', dataItem);
   
+    // Save the current row if another row is being edited
+    if (this.editedItem && this.editedItem !== dataItem) {
+      this.saveHandler({ sender, rowIndex: this.gridData.indexOf(this.editedItem), dataItem: this.editedItem });
+    }
+  
+    // Set the clicked row as the edited item
+    this.editedItem = dataItem;
+  
+    // Enter edit mode for the clicked row
+    sender.editRow(rowIndex);
+  }
+
+
+
+
 
 
 }

@@ -21,10 +21,17 @@ export class NavbarComponent {
     this.isCalendarOpen = !this.isCalendarOpen;
   }
   
+ 
+  isDarkMode = false;
+
   toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
   }
-  
 
 
 }

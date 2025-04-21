@@ -33,16 +33,24 @@
 
 
 
+
+
 <div class="grid-container mt-2">
-    <kendo-grid #gridRef [kendoGridBinding]="gridView" [editable]="true" (edit)="editHandler($event)"
+    <kendo-grid #gridRef (cellClick)="cellClickHandler($event)" [kendoGridBinding]="gridView" [editable]="true" (edit)="editHandler($event)"
         (cancel)="cancelHandler()" (save)="saveHandler($event)" (remove)="removeHandler($event)" kendoGridSelectBy="id"
         [(selectedKeys)]="mySelection" [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true"
         [sortable]="true" [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500"
-        [columnMenu]="{ filter: true }" class="mt-3"  >
+        [columnMenu]="{ filter: true }" class="mt-3">
 
-    <kendo-grid-excel></kendo-grid-excel>
+        <kendo-grid-excel></kendo-grid-excel>
 
         <ng-template kendoGridToolbarTemplate>
+
+
+            <button kendoButton (click)="addNewRow()" class="btn" style="margin-bottom: 30px; background-color:#7db641;">
+                Add New
+            </button>
+            
 
             <div class="small-dropdown" style="margin-bottom: 30px;">
 
@@ -106,10 +114,6 @@
         </ng-template>
 
 
-
-
-
-
         <kendo-grid-checkbox-column [width]="45" [headerStyle]="{ 'background-color': '#002b80', 'color': 'white'}"
             [headerClass]="{ 'text-center': true }" [class]="{ 'text-center': true }" [resizable]="false"
             [columnMenu]="false" [showSelectAll]="true"></kendo-grid-checkbox-column>
@@ -119,32 +123,38 @@
 
 
         <kendo-grid-column title="Actions" [width]="200"
-         [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
+            [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
 
             <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        
+
                 <button kendoButton icon="edit"
-                (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
-                *ngIf="editedItem?.id !== dataItem.id">
-                Edit
-            </button>
+                    (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
+                    *ngIf="!editedItem || editedItem !== dataItem">
+                    Edit
+                </button>
 
-            <button kendoButton icon="save" (click)="saveHandler({ sender: grid, rowIndex, dataItem })"
-            *ngIf="editedItem?.id === dataItem.id">
-      Save
-    </button>
-    
 
-                <button kendoButton icon="cancel" (click)="cancelHandler()" *ngIf="editedItem?.id === dataItem.id">
+                <button kendoButton icon="save"
+                    (click)="saveHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
+                    *ngIf="editedItem === dataItem">
+                    Save
+                </button>
+
+           
+                <button kendoButton icon="cancel" (click)="cancelHandler()" *ngIf="editedItem === dataItem">
                     Cancel
                 </button>
 
+          
+
                 <button kendoButton icon="delete" (click)="removeHandler({ dataItem })"
-                    *ngIf="editedItem?.id !== dataItem.id">
+                    *ngIf="!editedItem || editedItem !== dataItem">
                     Delete
                 </button>
             </ng-template>
         </kendo-grid-column>
- 
+
         <kendo-grid-column field="Record_Id" title="Record Id" [width]="270"
             [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
             <ng-template kendoGridEditTemplate let-dataItem="dataItem">

@@ -1,11 +1,12 @@
-<button (click)="toggleDarkMode()">Toggle Dark Mode</button>
-
-
-
-
-
-
-<div class="row navbar mt-5">
+ 
+<button (click)="toggleDarkMode()" class="mt-2">
+    <i [ngClass]="isDarkMode ? ' bi bi-moon' : 'bi bi-sun'"></i>
+    {{ isDarkMode ? 'Enable Dark Mode' : 'Enable Light Mode' }}
+  </button>
+  
+  
+  
+ <div class="row navbar mt-4">
     <div class="col-sm-12 example-col">
 
         <kendo-buttongroup width="100%">
@@ -37,7 +38,7 @@
                 <i class="fas fa-comments"></i> CHAT
             </button>
         </kendo-buttongroup>
-        <!-- Dropdown-style Calendar -->
+        
         <div class="calendar-dropdown" *ngIf="isCalendarOpen">
             <kendo-calendar [(value)]="selectedDate"></kendo-calendar>
         </div>
