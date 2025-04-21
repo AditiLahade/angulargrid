@@ -309,15 +309,13 @@ public cancelHandler(): void {
   public cellClickHandler({ sender, rowIndex, dataItem }: any): void {
     console.log('Cell clicked:', dataItem);
   
-    // Save the current row if another row is being edited
     if (this.editedItem && this.editedItem !== dataItem) {
       this.saveHandler({ sender, rowIndex: this.gridData.indexOf(this.editedItem), dataItem: this.editedItem });
     }
   
-    // Set the clicked row as the edited item
+    
     this.editedItem = dataItem;
   
-    // Enter edit mode for the clicked row
     sender.editRow(rowIndex);
   }
 

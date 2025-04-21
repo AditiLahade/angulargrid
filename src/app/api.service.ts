@@ -28,11 +28,6 @@ export class ApiService {
   }
 
 
-
-
-
-
-
   addData(data: any): Observable<any> {
     console.log('Sending POST request with data:', data);
     return this.http.post<any>(this.apiUrl, data).pipe(

@@ -130,14 +130,14 @@
 
                 <button kendoButton icon="edit"
                     (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
-                    *ngIf="!editedItem || editedItem !== dataItem">
+                    *ngIf="!editedItem || editedItem !== dataItem" style="margin-right: 15px;">
                     Edit
                 </button>
 
 
                 <button kendoButton icon="save"
                     (click)="saveHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
-                    *ngIf="editedItem === dataItem">
+                    *ngIf="editedItem === dataItem"  style="margin-right: 15px;">
                     Save
                 </button>
 
