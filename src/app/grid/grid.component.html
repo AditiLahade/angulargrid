@@ -20,6 +20,20 @@
         </label>
 
 
+        <button (click)="toggleDarkMode()" class="mt-1"
+            style="height: 39px;border-radius: 5px;border: 2px solid black;">
+            <i [ngClass]="isDarkMode ? ' bi bi-sun' : 'bi bi-moon'"></i>
+            <!-- {{ isDarkMode ? 'Enable Dark Mode' : 'Enable Light Mode' }} -->
+
+            {{ isDarkMode ? ' Light Mode' : ' Dark Mode' }}
+        </button>
+
+
+
+
+
+
+
         <button class="green-btn" (click)="exportExcel(gridRef)"> <i class="fas fa-file-excel"></i> Export to
             Excel</button>
 
@@ -36,33 +50,44 @@
 
 
 <div class="grid-container mt-2">
-    <kendo-grid #gridRef (cellClick)="cellClickHandler($event)" [kendoGridBinding]="gridView" [editable]="true" (edit)="editHandler($event)"
-        (cancel)="cancelHandler()" (save)="saveHandler($event)" (remove)="removeHandler($event)" kendoGridSelectBy="id"
-        [(selectedKeys)]="mySelection" [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true"
-        [sortable]="true" [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500"
-        [columnMenu]="{ filter: true }" class="mt-3">
+    <kendo-grid #gridRef (cellClick)="cellClickHandler($event)" [kendoGridBinding]="gridView" [editable]="true"
+        (edit)="editHandler($event)" (cancel)="cancelHandler()" (save)="saveHandler($event)"
+        (remove)="removeHandler($event)" kendoGridSelectBy="id" [(selectedKeys)]="mySelection"
+        [selectable]="{ mode: 'multiple', drag: true }" [pageSize]="20" [pageable]="true" [sortable]="true"
+        [groupable]="false" [reorderable]="true" [resizable]="true" [height]="500" [columnMenu]="{ filter: true }"
+        class="mt-3" [filterable]="true">
 
         <kendo-grid-excel></kendo-grid-excel>
 
         <ng-template kendoGridToolbarTemplate>
 
 
-            <button kendoButton (click)="addNewRow()" class="btn" style="margin-bottom: 30px; background-color:#7db641;">
+            <button kendoButton (click)="addNewRow()" class="btn"
+                style="margin-bottom: 30px; background-color:#7db641;">
                 Add New
             </button>
-            
+
 
             <div class="small-dropdown" style="margin-bottom: 30px;">
 
                 <kendo-dropdownlist [data]="areaList" [defaultItem]="'All Leads'"></kendo-dropdownlist>
 
             </div>
-
+            <!-- 
             <div class="small-dropdown-big" style="margin-bottom: 30px;">
 
                 <kendo-dropdownlist [data]="areaList" [defaultItem]="'Select Saved Preference'"></kendo-dropdownlist>
 
-            </div>
+            </div> -->
+
+
+
+            <!-- <div class="small-dropdown-big" style="margin-bottom: 30px;">
+                <kendo-dropdownlist [data]="preprocessedPreferences" [defaultItem]="'Select Saved Preference'"
+                    (valueChange)="applyPreference($event)">
+                </kendo-dropdownlist>
+            </div> -->
+
 
 
             <div class="search-container" style="margin-bottom: 30px;">
@@ -96,9 +121,21 @@
 
 
 
-            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Clear Filters</button>
+            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;" (click)="clearFilters()">Clear
+                Filters</button>
+
+
+
+
+
             <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Bulk Edit</button>
-            <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Save Preferences</button>
+
+            <!-- <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;">Save Preferences</button> -->
+
+
+            <!-- <button class="btn btn-sm green-btn ms-2" style="margin-bottom: 30px;" (click)="savePreferences()">Save
+                Preferences</button> -->
+
 
 
             <button class="hamburger-btn" [class.active]="menuOpen" (click)="menuOpen = !menuOpen"
@@ -126,9 +163,25 @@
             [headerStyle]="{ 'background-color': '#002b80', 'color': 'white','font-size': '18px'}">
 
             <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-        
 
-                <button kendoButton icon="edit"
+                <!-- <div class="small-dropdown">
+
+                    <kendo-dropdownlist [data]="areaList" [defaultItem]="'Actions'"
+                        [ngStyle]="{ 'background-color': '#7db641' }"></kendo-dropdownlist>
+
+                </div> -->
+
+                <div class="small-dropdown">
+                    <kendo-dropdownlist
+                      [data]="areaList"
+                      [defaultItem]="'⚙️ Actions'"
+                      [ngStyle]="{ 'background-color': '#7db641' }">
+                    </kendo-dropdownlist>
+                  </div>
+                  
+
+
+                <!-- <button kendoButton icon="edit"
                     (click)="editHandler({ sender: grid, rowIndex: rowIndex, dataItem: dataItem })"
                     *ngIf="!editedItem || editedItem !== dataItem" style="margin-right: 15px;">
                     Edit
@@ -144,14 +197,15 @@
            
                 <button kendoButton icon="cancel" (click)="cancelHandler()" *ngIf="editedItem === dataItem">
                     Cancel
-                </button>
+                </button> -->
 
-          
 
-                <button kendoButton icon="delete" (click)="removeHandler({ dataItem })"
+
+                <!-- <button kendoButton icon="delete" (click)="removeHandler({ dataItem })"
                     *ngIf="!editedItem || editedItem !== dataItem">
                     Delete
                 </button>
+                 -->
             </ng-template>
         </kendo-grid-column>
 

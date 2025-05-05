@@ -7,11 +7,12 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3001/employee'; 
+  private apiUrl = 'http://localhost:3000/employee'; 
   // addData: any;
 
   constructor(private http: HttpClient) {}
 
+  
   getData(): Observable<any> {
     console.log('Fetching data from:', this.apiUrl);
     return this.http.get<any>(this.apiUrl);
@@ -23,18 +24,22 @@ export class ApiService {
   
 
   deleteData(id: string): Observable<any> {
-    const url = `http://localhost:3001/employee/${id}`; 
+    const url = `http://localhost:3000/employee/${id}`; 
     return this.http.delete<any>(url);
   }
 
 
-  addData(data: any): Observable<any> {
-    console.log('Sending POST request with data:', data);
-    return this.http.post<any>(this.apiUrl, data).pipe(
-      tap((response) => console.log('Response from POST request:', response))
-    );
-  }
+  // addData(data: any): Observable<any> {
+  //   console.log('Sending POST request with data:', data);
+  //   return this.http.post<any>(this.apiUrl, data).pipe(
+  //     tap((response) => console.log('Response from POST request:', response))
+  //   );
+  // }
 
+
+  addData(data: any): Observable<any> {
+    return this.http.post<any>('http://localhost:3000/employee', data);
+  }
 
 
 }

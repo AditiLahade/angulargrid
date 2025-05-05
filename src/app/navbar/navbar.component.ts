@@ -22,16 +22,16 @@ export class NavbarComponent {
   }
   
  
-  isDarkMode = false;
+  // isDarkMode = false;
 
-  toggleDarkMode() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }
+  // toggleDarkMode() {
+  //   this.isDarkMode = !this.isDarkMode;
+  //   if (this.isDarkMode) {
+  //     document.body.classList.add('dark-mode');
+  //   } else {
+  //     document.body.classList.remove('dark-mode');
+  //   }
+  // }
 
 
 }
